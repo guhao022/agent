@@ -92,23 +92,23 @@ func main() {
 	commands := os.Args
 
 	if len(commands) < 3 {
-		println(helptext)
+		fmt.Println(helptext)
 		os.Exit(0)
 	}
 
 	switch commands[1] {
 	case "help":
-		println(helptext)
+		fmt.Println(helptext)
 	case "run":
 		switch commands[2] {
 		case "--help", "-h":
-			println(helptext)
+			fmt.Println(helptext)
 			os.Exit(0)
 		default:
 			ang.Server = commands[2]
 		}
 		ang.Run("9900")
 	default:
-		println(helptext)
+		fmt.Println(helptext)
 	}
 }
