@@ -22,7 +22,7 @@ var helptext = `
 
             run - 运行反向代理服务器
             Usage:
-                run [ip/server]    设置需要代理的服务器，输出log信息，方便调试
+                run [ip/server:port]    设置需要代理的服务器，输出log信息，方便调试
 `
 
 var total = 1
