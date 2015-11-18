@@ -14,7 +14,7 @@ import (
 var helptext = `
 	使用:
 
-        ght command [argument] [argument] ......
+        agent command [argument] [argument] ......
 
     arguments 包括:
 
