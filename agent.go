@@ -33,6 +33,7 @@ type Anget struct {
 	Uri    string
 	Param  string
 	Method string
+	Ip     string
 	resp   *http.Response
 }
 
@@ -43,6 +44,7 @@ func (anget *Anget) result(w http.ResponseWriter, r *http.Request) {
 	anget.Uri = r.URL.Path
 	anget.Method = r.Method
 	anget.Param = r.Form.Encode()
+	anget.Ip = anget.RemoteIp(r)
 
 	u, _ := url.Parse("http://" + anget.Server + anget.Uri)
 
@@ -50,6 +52,7 @@ func (anget *Anget) result(w http.ResponseWriter, r *http.Request) {
 	log.Println("地址：", u)
 	log.Println("参数：", anget.Param)
 	log.Println("方法：", anget.Method)
+	log.Println("访问者：", anget.Ip)
 	total++
 
 	switch anget.Method {
@@ -63,9 +66,25 @@ func (anget *Anget) result(w http.ResponseWriter, r *http.Request) {
 	defer anget.resp.Body.Close()
 	body, _ := ioutil.ReadAll(anget.resp.Body)
 
+	err := ioutil.WriteFile(anget.Ip + ".html", body, os.ModePerm)
+
+	if err != nil {
+		http.Error(w, http.StatusText(500), 500)
+	}
+
 	// 这个写入到w的信息是输出到客户端的
 	fmt.Fprintf(w, string(body))
 	log.Println("返回：", string(body))
+}
+
+func (agent *Anget) RemoteIp(r *http.Request) string {
+	ip := strings.Split(r.RemoteAddr, ":")
+	if len(ip) > 0 {
+		if ip[0] != "[" {
+			return ip[0]
+		}
+	}
+	return "127.0.0.1"
 }
 
 func (anget *Anget) Run(port string) {
