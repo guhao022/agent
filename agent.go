@@ -28,7 +28,7 @@ var helptext = `
 var total = 1
 
 
-type Anget struct {
+type Agent struct {
 	Server string
 	Uri    string
 	Param  string
@@ -37,36 +37,36 @@ type Anget struct {
 	resp   *http.Response
 }
 
-func (anget *Anget) result(w http.ResponseWriter, r *http.Request) {
+func (agent *Agent) result(w http.ResponseWriter, r *http.Request) {
 	// 解析参数, 默认是不会解析的
 	r.ParseForm()
 
-	anget.Uri = r.URL.Path
-	anget.Method = r.Method
-	anget.Param = r.Form.Encode()
-	anget.Ip = anget.RemoteIp(r)
+	agent.Uri = r.URL.Path
+	agent.Method = r.Method
+	agent.Param = r.Form.Encode()
+	agent.Ip = agent.RemoteIp(r)
 
-	u, _ := url.Parse("http://" + anget.Server + anget.Uri)
+	u, _ := url.Parse("http://" + agent.Server + agent.Uri)
 
 	fmt.Printf("\n=================================%d===================================\n", total)
 	log.Println("地址：", u)
-	log.Println("参数：", anget.Param)
-	log.Println("方法：", anget.Method)
-	log.Println("访问者：", anget.Ip)
+	log.Println("参数：", agent.Param)
+	log.Println("方法：", agent.Method)
+	log.Println("访问者：", agent.Ip)
 	total++
 
-	switch anget.Method {
+	switch agent.Method {
 	case "GET":
-		anget.resp, _ = http.Get(u.String())
+		agent.resp, _ = http.Get(u.String())
 	case "POST":
-		anget.resp, _ = http.Post(u.String(), "application/x-www-form-urlencoded", strings.NewReader(anget.Param))
+		agent.resp, _ = http.Post(u.String(), "application/x-www-form-urlencoded", strings.NewReader(agent.Param))
 	default:
 		http.Error(w, http.StatusText(500), 500)
 	}
-	defer anget.resp.Body.Close()
-	body, _ := ioutil.ReadAll(anget.resp.Body)
+	defer agent.resp.Body.Close()
+	body, _ := ioutil.ReadAll(agent.resp.Body)
 
-	err := ioutil.WriteFile(anget.Ip + ".html", body, os.ModePerm)
+	err := ioutil.WriteFile(agent.Ip + ".html", body, os.ModePerm)
 
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
@@ -77,7 +77,7 @@ func (anget *Anget) result(w http.ResponseWriter, r *http.Request) {
 	log.Println("返回：", string(body))
 }
 
-func (agent *Anget) RemoteIp(r *http.Request) string {
+func (agent *Agent) RemoteIp(r *http.Request) string {
 	ip := strings.Split(r.RemoteAddr, ":")
 	if len(ip) > 0 {
 		if ip[0] != "[" {
@@ -87,8 +87,8 @@ func (agent *Anget) RemoteIp(r *http.Request) string {
 	return "127.0.0.1"
 }
 
-func (anget *Anget) Run(port string) {
-	conn, err := net.Dial("tcp", anget.Server)
+func (agent *Agent) Run(port string) {
+	conn, err := net.Dial("tcp", agent.Server)
 	if err != nil {
 		fmt.Println("连接服务端失败:", err.Error())
 		os.Exit(0)
@@ -96,7 +96,7 @@ func (anget *Anget) Run(port string) {
 	fmt.Println("已连接测试服务器～～～")
 	conn.Close()
 
-	http.HandleFunc("/"+anget.Uri, anget.result)
+	http.HandleFunc("/"+agent.Uri, agent.result)
 	fmt.Println("代理服务器开启，端口为：" + port)
 	// 设置监听的端口
 	err = http.ListenAndServe(":" + port, nil)
@@ -106,7 +106,7 @@ func (anget *Anget) Run(port string) {
 }
 
 func main() {
-	var ang Anget
+	var ang Agent
 
 	commands := os.Args
 
