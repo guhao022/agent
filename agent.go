@@ -41,7 +41,7 @@ func (agent *Agent) result(w http.ResponseWriter, r *http.Request) {
 	// 解析参数, 默认是不会解析的
 	r.ParseForm()
 	
-	b, _ := ioutil.ReadAll(rbody)
+	b, _ := ioutil.ReadAll(r.Body)
 	
 	
 
