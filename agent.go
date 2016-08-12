@@ -40,6 +40,10 @@ type Agent struct {
 func (agent *Agent) result(w http.ResponseWriter, r *http.Request) {
 	// 解析参数, 默认是不会解析的
 	r.ParseForm()
+	
+	b, _ := ioutil.ReadAll(rbody)
+	
+	
 
 	agent.Uri = r.URL.Path
 	agent.Method = r.Method
@@ -50,7 +54,7 @@ func (agent *Agent) result(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("\n=================================%d===================================\n", total)
 	log.Println("地址：", u)
-	log.Println("参数：", agent.Param)
+	log.Println("参数：", f)
 	log.Println("方法：", agent.Method)
 	log.Println("访问者：", agent.Ip)
 	total++
