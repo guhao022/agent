@@ -54,7 +54,7 @@ func (agent *Agent) result(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("\n=================================%d===================================\n", total)
 	log.Println("地址：", u)
-	log.Println("参数：", f)
+	log.Println("参数：", string(b))
 	log.Println("方法：", agent.Method)
 	log.Println("访问者：", agent.Ip)
 	total++
