@@ -38,6 +38,9 @@ type Agent struct {
 }
 
 func (agent *Agent) result(w http.ResponseWriter, r *http.Request) {
+	
+	r.Header.Set("Access-Control-Allow-Origin", "*")
+	
 	// 解析参数, 默认是不会解析的
 	r.ParseForm()
 	
